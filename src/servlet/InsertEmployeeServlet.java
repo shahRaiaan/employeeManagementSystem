@@ -13,13 +13,28 @@ public class InsertEmployeeServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		EmployeeDao dao = EmployeeDao.getInstance();
+		String id = request.getParameter("dispatchedID");
+
 		String name = request.getParameter("name");
+
 		String address = request.getParameter("address");
+
 		String country = request.getParameter("country");
+
 		String gender = request.getParameter("gender");
 
-		EmployeeDao dao = EmployeeDao.getInstance();
-		dao.add(name, address, country, gender);
+		if (id == null || id.isEmpty()) {
+
+			dao.add(name, address, country, gender);
+
+			response.sendRedirect("employeeList.jsp");
+		} else {
+
+			dao.updateAll(Integer.parseInt(id), name, address, country, gender);
+			response.sendRedirect("employeeList.jsp");
+
+		}
 
 	}
 

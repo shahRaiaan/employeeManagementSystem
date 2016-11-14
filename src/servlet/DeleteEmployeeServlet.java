@@ -14,8 +14,13 @@ public class DeleteEmployeeServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-
+		String m = request.getParameter("id");
+		int id = Integer.parseInt(m.trim());
+		
 		EmployeeDao dao = EmployeeDao.getInstance();
+	    dao.delete(id);
+		
+		response.sendRedirect("employeeList.jsp");
 		
 
 	}

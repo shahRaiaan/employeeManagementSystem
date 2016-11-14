@@ -1,5 +1,6 @@
 package dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -50,7 +51,7 @@ public class EmployeeDao {
 
 	}
 
-	public void updateName(int id, String name) {
+	public void updateAll(int id, String name, String address, String country, String gender) {
 		SessionFactory factory = HibernateUtil.getSessionFactory();
 		Session session = null;
 		Transaction tx = null;
@@ -60,6 +61,9 @@ public class EmployeeDao {
 			tx = session.beginTransaction();
 			Employee emp = (Employee) session.get(Employee.class, id);
 			emp.setName(name);
+			emp.setAddress(address);
+			emp.setCountry(country);
+			emp.setGender(gender);
 			session.update(emp);
 
 			tx.commit();
@@ -103,8 +107,28 @@ public class EmployeeDao {
 
 	}
 
-	public List<Employee> findAll() {
-		return null;
+	public ArrayList<Employee> findAll() {
+		ArrayList<Employee> empList = new ArrayList<Employee>();
+		SessionFactory factory = HibernateUtil.getSessionFactory();
+		Session session = null;
+		Transaction tx = null;
+		try {
+			session = factory.openSession();
+			tx = session.beginTransaction();
+			empList = (ArrayList<Employee>) session.createQuery("from Employee").list();
+			tx.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (session.getTransaction() != null) {
+				session.getTransaction().rollback();
+			}
+		} finally {
+			session.close();
+
+		}
+
+		return empList;
 
 	}
 

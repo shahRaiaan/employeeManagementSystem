@@ -1,6 +1,11 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="java.util.*"%>
+<%@ page import="dao.EmployeeDao"%>
+<%@ page import="pojo.Employee"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -24,10 +29,9 @@
 	crossorigin="anonymous"></script>
 <title>Insert title here</title>
 <style type="text/css">
-	body{
-		padding: 25px;
-	}
-
+body {
+	padding: 25px;
+}
 </style>
 </head>
 <body>
@@ -38,22 +42,29 @@
 		<div class="panel-body">
 
 			<form action="insert" method="post">
+
+				<%
+					Employee dispatchedEmployee = (Employee) request.getAttribute("Employee");		
+							
+				%>
+				<input type="hidden" id="id" name= "dispatchedID" value="<%= dispatchedEmployee != null ? dispatchedEmployee.getId() : "" %>" />
 				<div class="form-group">
 					<label for="name">Name:</label> <input type="text"
-						class="form-control" name="name" id="name" placeholder="Name">
+						class="form-control" name="name" id="name" placeholder="Name"
+						value="<%= dispatchedEmployee != null ? dispatchedEmployee.getName() : "" %>" />
 				</div>
 				<div class="form-group">
 					<label for="address">Address:</label> <input type="text"
 						class="form-control" id="address" name="address"
-						placeholder="Address">
+						placeholder="Address" value="<%= dispatchedEmployee != null ? dispatchedEmployee.getAddress() : "" %>" />
 				</div>
 				<div class="form-group">
 					<label for="country">Country:</label> <select id="country"
-						name="country" class="form-control">
-						<option value="Yemen">Yemen</option>
-						<option value="Yugoslavia">Yugoslavia</option>
-						<option value="Zambia">Zambia</option>
-						<option value="Zimbabwe">Zimbabwe</option>
+						name="country" class="form-control" >
+						<option value="United States">United States</option>
+						<option value="Bangladesh">Bangladesh</option>
+						<option value="Germany">Germany</option>
+						<option value="Canada">Canada</option>
 					</select>
 
 				</div>
@@ -69,8 +80,53 @@
 				<button type="submit" class="btn btn-default">Submit</button>
 			</form>
 		</div>
+
 	</div>
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title">Current Employees</h3>
+		</div>
+		<div class="panel-body"></div>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+
+					<th>ID</th>
+					<th>NAME</th>
+					<th>ADDRESS</th>
+					<th>COUNTRY</th>
+					<th>GENDER</th>
+					<th>ACTION</th>
 
 
+				</tr>
+			</thead>
+
+			<tbody>
+
+				<%!EmployeeDao empdao = EmployeeDao.getInstance();%>
+
+				<%
+					ArrayList<Employee> empList = empdao.findAll();
+					for (Employee emp : empList) {
+				%>
+
+				<tr>
+					<td><%=emp.getId()%></td>
+					<td><%=emp.getName()%></td>
+					<td><%=emp.getAddress()%></td>
+					<td><%=emp.getCountry()%></td>
+					<td><%=emp.getGender()%></td>
+					<td><a href="update?id=<%=emp.getId()%>">Edit</a>/<a
+						href="delete?id=<%=emp.getId()%>">Delete</a></td>
+
+				</tr>
+
+
+				<%
+					}
+				%>
+			</tbody>
+		</table>
 </body>
 </html>
